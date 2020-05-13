@@ -1,0 +1,50 @@
+【LINUX服务器操作命令合集】
+
+1、查看服务器各目录容量
+
+sudo du -sh /home/* | fgrep G
+
+
+
+【git命令合集】
+
+1、拉分支并提交到分支
+
+git clone <repository_url> -b <remote_branch_name> <local_dir_name>
+git push -u origin <local_branch_name>:<new_local_branch_name>
+git clone <repository_url> -b dev dev
+git push -u origin dev:dev
+
+
+
+【K8S命令合集】
+
+1、新建docker
+image="reg.docker.alibaba-inc.com/alipay-alps/alps-runtime:gpu-tf1.12.3-py3"   #alps-python3
+#image="reg.docker.alibaba-inc.com/alipay-collie/cuda8-396.26-driver"
+#image="reg.docker.alibaba-inc.com/ant_ai/alios7u2-cuda9u2-cudnn7-tensorflow:v1.8.6.cpu.cgroup"    #for xhb_front_desk
+#image="reg.docker.alibaba-inc.com/alipay-alps/cuda9_cudnn7_tf1.12:v0.3"   #alps-python2
+# gpu_public2
+# kubemaker
+# reg.docker.alibaba-inc.com/alipay-collie/cuda9-418.67-driver:20191227_1
+# reg.docker.alibaba-inc.com/ainlp/ainlp:base-py2-legacy
+
+kmcli run --name lianxin-py3torch --no-tensorboard --runtime tensorflow --user 78605 --no-master \
+          --image 'reg.docker.alibaba-inc.com/xnncloud/horovod:1.12.0-gpu-py3.5_v6' \
+          --worker 'cpu=10,memory=8192,gpu=2' 1\
+          --output datacube-gfs:/ --input datacube-gfs:/ \
+          --app aicognition  --pool kubemaker --priority=high \
+         'hostname && nvidia-smi && sleep 500000'
+
+2、查看docker创建状态
+kmcli get job lianxin-py3torch
+
+3、查看有多少排队创建docker的
+kmcli get jobs | grep aicognition
+
+4、删除docker
+kubectl delete training lianxin-py3torch  --cascade=true
+
+5、登陆docker
+kubectl exec -it lianxin-py3torch-tfjob-worker-0 -c tensorflow bash
+
