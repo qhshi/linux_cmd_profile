@@ -48,3 +48,9 @@ kubectl delete training lianxin-py3torch  --cascade=true
 5、登陆docker
 kubectl exec -it lianxin-py3torch-tfjob-worker-0 -c tensorflow bash
 
+6、查看进程
+ps -axu | grep pretrain
+
+7、杀死进程
+eval kill -9 进程id
+
